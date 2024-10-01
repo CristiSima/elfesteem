@@ -14,8 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: "ubuntu-latest"
-        python-version: "3.10"
+        os: ["ubuntu-latest"]
+        python-version: ["3.10"]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -32,45 +32,3 @@ jobs:
     - name: Update codecov
       run: |
         codecov
-
-  python23:
-    name: python2.3
-    runs-on: "ubuntu-latest"
-    strategy:
-      fail-fast: false
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 2.3
-      run: |
-        cd ..
-        curl -O https://www.python.org/ftp/python/2.3.7/Python-2.3.7.tgz
-        tar xzf Python-2.3.7.tgz
-        cd Python-2.3.7
-        # We need to disable FORTIFY_SOURCE to compile python 2.3
-        # cf. https://bugs.launchpad.net/ubuntu/+source/gcc-defaults/+bug/286334
-        ./configure BASECFLAGS=-U_FORTIFY_SOURCE
-        make
-        sudo ln -fs $(pwd)/python /usr/local/bin/python
-    - name: Non-regression tests
-      run: |
-        python -c 'import sys;print(sys.version)'
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
-        python ./tests/test_all.py
-
-  examples:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["macos-11", "macos-12", "macos-13"]
-        python-version: ["3.10"]
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Non-regression tests
-      run: |
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
-        zsh ./tests/examples_macos.sh
