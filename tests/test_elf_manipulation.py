@@ -161,14 +161,17 @@ def test_ELF_small64(assertion):
               'Packing after reading elf64_small.out')
     # Packed file is identical :-)
     d = e.sh.readelf_display().encode('latin1')
+    print("sh.readelf_display", d, hashlib.md5(d).hexdigest(), "\n")
     assertion('6d4aa86afdbf612430cb699987bc22b9',
               hashlib.md5(d).hexdigest(),
               'Display Section Headers (readelf, 64bit)')
     d = e.getsectionbyname('.symtab').readelf_display().encode('latin1')
+    print("symtab.readelf_display", d, hashlib.md5(d).hexdigest(), "\n")
     assertion('452e64fb0f2dad5c0e44d83e57b9d82b',
               hashlib.md5(d).hexdigest(),
               'Display Symbol Table (elf64)')
     d = e.getsectionbyname('.rela.dyn').readelf_display().encode('latin1')
+    print("rela.dyn.readelf_display", d, hashlib.md5(d).hexdigest(), "\n")
     assertion('650cf3f99117d39d63fae73232e09acf',
               hashlib.md5(d).hexdigest(),
               'Display Reloc Table (elf64)')
